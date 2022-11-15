@@ -2,7 +2,7 @@
 # Authors:     MG
 # Maintainers: MG
 # =========================================
-# mexico-homicide-rates/census-data/import/src/import-inegi.R
+# mexico-homicide-rates/census-data/import-muni/src/import-inegi.R
 
 # ----- setup
 
@@ -23,7 +23,8 @@ inegi_data <- read_csv(args$input, skip = 7, locale = readr::locale(encoding = "
     set_names(c("mun_code", "mun_name", "total_pop", "hombres", "mujeres")) %>%
     mutate(cve_ent = str_pad(str_sub(mun_code, 1, 2), 3, "left", "0"),
            cve_mun = str_sub(mun_code, 4, 6)) %>%
-    select(-mun_code)
+    select(-mun_code) %>%
+    mutate(ent_mun = paste0(cve_ent, cve_mun))
 
 n_original <- nrow(inegi_data)
 
