@@ -20,7 +20,7 @@ args <- parser$parse_args()
 # ----- main
 
 inegi_data <- read_csv(args$input, skip = 7, locale = readr::locale(encoding = "latin1")) %>%
-    set_names(c("mun_code", "mun_name", "total_pop", "hombres", "mujeres")) %>%
+    set_names(c("mun_code", "mun_name", "total_pop")) %>%
     mutate(cve_ent = str_pad(str_sub(mun_code, 1, 2), 3, "left", "0"),
            cve_mun = str_sub(mun_code, 4, 6)) %>%
     select(-mun_code) %>%
