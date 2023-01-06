@@ -1,8 +1,12 @@
-# TODO: add header
+#
+# Authors:     MG
+# Maintainers: MG
+# =========================================
+# mexico-homicide-rates/census-data/interpolate/src/interpolate.R
 
 # ----- setup
 
-pacman::p_load(argparse, here, readr, dplyr, purrr)
+pacman::p_load(argparse, here, readr, dplyr, purrr, lubridate)
 
 parser <- ArgumentParser()
 parser$add_argument("--census_2000",
@@ -11,8 +15,51 @@ parser$add_argument("--census_2010",
                     default = here::here("census-data/import-muni/output/census-2010.csv"))
 parser$add_argument("--census_2020",
                     default = here::here("census-data/import-muni/output/census-2020.csv"))
+parser$add_argument("--output",
+                    default = "output/population-estimates.csv")
 
 args <- parser$parse_args()
+
+# ----- functions
+
+
+interpolation_wrapper <- function(ent) {
+
+    census_2000 <- decimal_date(ymd(20000214))
+    census_2010 <- decimal_date(ymd(20100612))
+    census_2020 <- decimal_date(ymd(20200318))
+
+    months_1 <- seq(ymd(20000215), ymd(20100515), by = "month")
+    months_2 <- seq(ymd(20100615), ymd(20200315), by = "month")
+
+    estimates_1 <- map_dfr(.x = months_1,
+                           ~interpolate_population(pop_1 = ent$total_pop_2000,
+                                                   pop_2 = ent$total_pop_2010,
+                                                   census_1 = census_2000,
+                                                   census_2 = census_2010,
+                                                   est_date = .x))
+    estimates_2 <- map_dfr(.x = months_2,
+                           ~interpolate_population(pop_1 = ent$total_pop_2010,
+                                                   pop_2 = ent$total_pop_2020,
+                                                   census_1 = census_2010,
+                                                   census_2 = census_2020,
+                                                   est_date = .x))
+
+    bind_rows(estimates_1, estimates_2) %>%
+        mutate(ent_mun = ent$ent_mun)
+
+}
+
+
+interpolate_population <- function(pop_1, pop_2, census_1, census_2, est_date) {
+
+    est_date <- decimal_date(est_date)
+    pop_est <- pop_1 + ((est_date - census_1) / census_2) * (pop_2 - pop_1)
+
+    return(tibble(pop_est = pop_est, est_date = est_date))
+
+}
+
 
 # ----- main
 
@@ -34,7 +81,15 @@ census_data <- list(census_2000, census_2010, census_2020) %>%
 census_data <- census_data %>%
     filter(!is.na(total_pop_2000) & !is.na(total_pop_2010) & !is.na(total_pop_2020))
 
-# TODO: setup interpolation here to get monthly pops for each muni between census years
+population_estimates <- census_data %>%
+    rowwise() %>%
+    group_split() %>%
+    map_dfr(interpolation_wrapper) %>%
+    mutate(month = month(date_decimal(est_date)),
+           year = year(date_decimal(est_date)))
 
+population_estimates %>%
+    glimpse() %>%
+    write_delim(args$output, delim = "|")
 
 # done.
