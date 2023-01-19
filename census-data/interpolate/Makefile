@@ -23,6 +23,7 @@ output/population-estimates.csv: \
 			--census_2000=$(HERE)/census-data/import-muni/output/census-2000.csv \
 			--census_2010=$(HERE)/census-data/import-muni/output/census-2010.csv \
 			--census_2020=$(HERE)/census-data/import-muni/output/census-2020.csv \
-			--output=$@
+			--new_munis=output/new-munis.csv \
+			--population_estimates=$@
 
 # done.

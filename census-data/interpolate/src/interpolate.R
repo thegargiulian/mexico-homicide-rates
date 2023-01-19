@@ -15,7 +15,9 @@ parser$add_argument("--census_2010",
                     default = here::here("census-data/import-muni/output/census-2010.csv"))
 parser$add_argument("--census_2020",
                     default = here::here("census-data/import-muni/output/census-2020.csv"))
-parser$add_argument("--output",
+parser$add_argument("--new_munis",
+                    default = "output/new-munis.csv")
+parser$add_argument("--population_estimates",
                     default = "output/population-estimates.csv")
 
 args <- parser$parse_args()
@@ -77,7 +79,11 @@ census_data <- list(census_2000, census_2010, census_2020) %>%
     reduce(., full_join, by = "ent_mun") %>%
     select(ent_mun, everything())
 
-# TODO: actually address these changes rather than ignoring them
+# writing munis that don't have population data for all 3 years to file
+census_data %>%
+    filter(is.na(total_pop_2000) | is.na(total_pop_2010) | is.na(total_pop_2020)) %>%
+    write_delim(args$new_munis, delim = "|")
+
 census_data <- census_data %>%
     filter(!is.na(total_pop_2000) & !is.na(total_pop_2010) & !is.na(total_pop_2020))
 
@@ -90,6 +96,6 @@ population_estimates <- census_data %>%
 
 population_estimates %>%
     glimpse() %>%
-    write_delim(args$output, delim = "|")
+    write_delim(args$population_estimates, delim = "|")
 
 # done.
