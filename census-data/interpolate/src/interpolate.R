@@ -31,16 +31,17 @@ interpolation_wrapper <- function(ent) {
     census_2010 <- decimal_date(ymd(20100612))
     census_2020 <- decimal_date(ymd(20200318))
 
-    months_1 <- seq(ymd(20000215), ymd(20100515), by = "month")
-    months_2 <- seq(ymd(20100615), ymd(20200315), by = "month")
+    # use 1 July as mid-year date
+    mid_years_1 <- seq(ymd(20000701), ymd(20090701), by = "year")
+    mid_years_2 <- seq(ymd(20100701), ymd(20190701), by = "year")
 
-    estimates_1 <- map_dfr(.x = months_1,
+    estimates_1 <- map_dfr(.x = mid_years_1,
                            ~interpolate_population(pop_1 = ent$total_pop_2000,
                                                    pop_2 = ent$total_pop_2010,
                                                    census_1 = census_2000,
                                                    census_2 = census_2010,
                                                    est_date = .x))
-    estimates_2 <- map_dfr(.x = months_2,
+    estimates_2 <- map_dfr(.x = mid_years_2,
                            ~interpolate_population(pop_1 = ent$total_pop_2010,
                                                    pop_2 = ent$total_pop_2020,
                                                    census_1 = census_2010,
@@ -65,6 +66,7 @@ interpolate_population <- function(pop_1, pop_2, census_1, census_2, est_date) {
 
 # ----- main
 
+# load and join data
 census_2000 <- read_delim(args$census_2000, delim = "|") %>%
     select(total_pop, ent_mun) %>%
     rename(total_pop_2000 = total_pop)
@@ -79,7 +81,7 @@ census_data <- list(census_2000, census_2010, census_2020) %>%
     reduce(., full_join, by = "ent_mun") %>%
     select(ent_mun, everything())
 
-# writing munis that don't have population data for all 3 years to file
+# writing munis that don't have population data for all 3 census years to file
 census_data %>%
     filter(is.na(total_pop_2000) | is.na(total_pop_2010) | is.na(total_pop_2020)) %>%
     write_delim(args$new_munis, delim = "|")
@@ -87,12 +89,14 @@ census_data %>%
 census_data <- census_data %>%
     filter(!is.na(total_pop_2000) & !is.na(total_pop_2010) & !is.na(total_pop_2020))
 
+# interpolate to get mid-years population estimates for the intercensal period
 population_estimates <- census_data %>%
     rowwise() %>%
     group_split() %>%
     map_dfr(interpolation_wrapper) %>%
     mutate(month = month(date_decimal(est_date)),
-           year = year(date_decimal(est_date)))
+           year = year(date_decimal(est_date)),
+           day = day(date_decimal(est_date)))
 
 population_estimates %>%
     glimpse() %>%

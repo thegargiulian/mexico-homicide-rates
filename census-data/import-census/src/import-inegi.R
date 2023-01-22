@@ -2,25 +2,24 @@
 # Authors:     MG
 # Maintainers: MG
 # =========================================
-# mexico-homicide-rates/census-data/import-muni/src/import-inegi-2000.R
+# mexico-homicide-rates/census-data/import-census/src/import-inegi.R
 
 # ----- setup
 
 if (!require(pacman)) {install.packages("pacman")}
 
-pacman::p_load(argparse, dplyr, readr, assertr)
+pacman::p_load(here, argparse, dplyr, janitor, readr, assertr)
 
 parser <- ArgumentParser()
-parser$add_argument("--input", default = "input/cgpv2000_iter_00.csv")
-# retrieved using https://www.inegi.org.mx/programas/ccpv/2000/#Datos_abiertos
-# download data for Estados Unidos Mexicanos
+parser$add_argument("--input")
 parser$add_argument("--output")
 
 args <- parser$parse_args()
 
 # ----- main
 
-inegi_data <- read_csv(args$input)
+inegi_data <- read_csv(args$input) %>%
+    clean_names()
 
 inegi_data_total <- inegi_data %>%
     filter(loc == "0000" & nom_ent == "Total nacional") %>%
