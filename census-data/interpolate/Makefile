@@ -15,14 +15,14 @@ clean:
 
 output/population-estimates.csv: \
 		src/interpolate.R \
-		$(HERE)/census-data/import-muni/output/census-2000.csv \
-		$(HERE)/census-data/import-muni/output/census-2010.csv \
-		$(HERE)/census-data/import-muni/output/census-2020.csv
+		$(HERE)/census-data/import/output/census-2000.csv \
+		$(HERE)/census-data/import/output/census-2010.csv \
+		$(HERE)/census-data/import/output/census-2020.csv
 	-mkdir output
 	Rscript --vanilla $< \
-			--census_2000=$(HERE)/census-data/import-muni/output/census-2000.csv \
-			--census_2010=$(HERE)/census-data/import-muni/output/census-2010.csv \
-			--census_2020=$(HERE)/census-data/import-muni/output/census-2020.csv \
+			--census_2000=$(HERE)/census-data/import/output/census-2000.csv \
+			--census_2010=$(HERE)/census-data/import/output/census-2010.csv \
+			--census_2020=$(HERE)/census-data/import/output/census-2020.csv \
 			--new_munis=output/new-munis.csv \
 			--population_estimates=$@
 
