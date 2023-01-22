@@ -1,0 +1,63 @@
+#
+# Authors:     MG
+# Maintainers: MG
+# =========================================
+# mexico-homicide-rates/homicide-rates/src/calculate-rates.R
+
+# ----- setup
+
+pacman::p_load(argparse, here, dplyr, readr, tidyr, lubridate)
+
+parser <- ArgumentParser()
+parser$add_argument("--homicides_data",
+                    default = here::here("deaths-data/homicide-tables/output/muni-month-homicides-2000-2020.csv"))
+parser$add_argument("--population_estimates",
+                    default = here::here("census-data/interpolate/output/population-estimates.csv"))
+parser$add_argument("--output",
+                    default = "output/homicide-rates.csv")
+
+args <- parser$parse_args()
+
+# ----- constants
+
+months_data <- tribble(~month, ~n_days,
+                       1, 31,
+                       2, 28,
+                       3, 31,
+                       4, 30,
+                       5, 31,
+                       6, 30,
+                       7, 31,
+                       8, 31,
+                       9, 30,
+                       10, 31,
+                       11, 30,
+                       12, 31)
+
+# ----- main
+
+homicides <- read_delim(args$homicides_data, delim = "|") %>%
+    select(-cve_mun, -cve_ent)
+population <- read_delim(args$population_estimates, delim = "|") %>%
+    select(-month, -day, -est_date)
+
+munis <- union(homicides$ent_mun, population$ent_mun)
+months <- seq(ym("200001"), ym("201912"), by = "month")
+
+homicide_rates <- crossing(munis, months) %>%
+    mutate(year = as.numeric(year(months)),
+           month = as.numeric(month(months))) %>%
+    select(-months, ent_mun = munis) %>%
+    left_join(homicides, by = c("ent_mun", "year", "month")) %>%
+    # if no recorded homicides replace NA with 0
+    mutate(homicides = replace_na(homicides, 0)) %>%
+    left_join(population, by = c("ent_mun", "year")) %>%
+    left_join(months_data, by = "month") %>%
+    # calculate rate per 100,000 population
+    mutate(homicide_rate = (homicides / ((pop_est / 365.25) * n_days)) * 100000)
+
+homicide_rates %>%
+    glimpse() %>%
+    write_delim(args$output, delim = "|")
+
+# done.
