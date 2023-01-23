@@ -6,6 +6,8 @@
 
 # ----- setup
 
+if (!require(pacman)) {install.packages("pacman")}
+
 pacman::p_load(argparse, here, dplyr, readr, tidyr, lubridate)
 
 parser <- ArgumentParser()
@@ -38,20 +40,27 @@ months_data <- tribble(~month, ~n_days,
 
 homicides <- read_delim(args$homicides_data, delim = "|") %>%
     select(-cve_mun, -cve_ent)
+
 population <- read_delim(args$population_estimates, delim = "|") %>%
     select(-month, -day, -est_date)
 
+# start by creating a grid with all municipalities and months between January
+# 2000 and December 2019 (mid-year population estimates aren't available for
+# 2020 because the census took place in March)
 munis <- union(homicides$ent_mun, population$ent_mun)
 months <- seq(ym("200001"), ym("201912"), by = "month")
 
-homicide_rates <- crossing(munis, months) %>%
+homicide_rates <- crossing(munis, months) %>% # expand grid
     mutate(year = as.numeric(year(months)),
            month = as.numeric(month(months))) %>%
     select(-months, ent_mun = munis) %>%
+    # join homicide data to grid
     left_join(homicides, by = c("ent_mun", "year", "month")) %>%
     # if no recorded homicides replace NA with 0
     mutate(homicides = replace_na(homicides, 0)) %>%
+    # join mid-year population estimates to grid
     left_join(population, by = c("ent_mun", "year")) %>%
+    # join months df, which has the info on the # of days in each month
     left_join(months_data, by = "month") %>%
     # calculate rate per 100,000 population
     mutate(homicide_rate = (homicides / ((pop_est / 365.25) * n_days)) * 100000)
