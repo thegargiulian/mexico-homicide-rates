@@ -2,7 +2,7 @@
 # Authors:     MG
 # Maintainers: MG
 # =========================================
-# mexico-homicide-rates/homicide-rates/src/calculate-rates.R
+# mexico-homicide-rates/code/homicide-rates/src/calculate.R
 
 # ----- setup
 
@@ -63,7 +63,8 @@ homicide_rates <- crossing(munis, months) %>% # expand grid
     # join months df, which has the info on the # of days in each month
     left_join(months_data, by = "month") %>%
     # calculate rate per 100,000 population
-    mutate(homicide_rate = (homicides / ((pop_est / 365.25) * n_days)) * 100000)
+    mutate(homicide_rate = (homicides / ((pop_est / 365.25) * n_days)) * 100000) %>%
+    select(-n_days)
 
 homicide_rates %>%
     glimpse() %>%

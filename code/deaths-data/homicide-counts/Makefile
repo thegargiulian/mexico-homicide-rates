@@ -2,10 +2,10 @@
 # Authors:     MG
 # Maintainers: MG
 # =========================================
-# mexico-homicide-rates/deaths-data/homicide-tables/Makefile
+# mexico-homicide-rates/code/deaths-data/homicide-counts/Makefile
 
 HERE := $(shell git rev-parse --show-toplevel)
-DEATHS := $(wildcard $(HERE)/deaths-data/import/output/DEFUN*.csv)
+DEATHS := $(wildcard $(HERE)/code/deaths-data/import/output/DEFUN*.csv)
 
 .PHONY: all clean
 
@@ -15,11 +15,11 @@ clean:
 		-rm output/*
 
 output/muni-month-homicides-2000-2020.csv: \
-		src/make-tables.R \
+		src/calculate.R \
 		$(DEATHS)
 	-mkdir output
 	Rscript --vanilla $< \
-			--import_stub=$(HERE)/deaths-data/import/output \
+			--import_stub=$(HERE)/code/deaths-data/import/output \
 			--output=$@
 
 # done.

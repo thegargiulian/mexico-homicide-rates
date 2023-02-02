@@ -2,7 +2,7 @@
 # Authors:     MG
 # Maintainers: MG
 # =========================================
-# mexico-homicide-rates/deaths-data/import/Makefile
+# mexico-homicide-rates/code/deaths-data/import/Makefile
 
 HERE := $(shell git rev-parse --show-toplevel)
 DEATHS := $(wildcard $(HERE)/data/death-certificates/DEFUN*.dbf)

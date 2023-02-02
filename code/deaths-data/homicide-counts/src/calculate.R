@@ -2,15 +2,17 @@
 # Authors:     MG
 # Maintainers: MG
 # =========================================
-# mexico-homicide-rates/deaths-data/homicide-tables/src/make-tables.R
+# mexico-homicide-rates/code/deaths-data/homicide-counts/src/calculate.R
 
 # ----- setup
+
+if (!require(pacman)) {install.packages("pacman")}
 
 pacman::p_load(argparse, here, readr, dplyr, purrr, glue, janitor, stringr)
 
 parser <- ArgumentParser()
 parser$add_argument("--import_stub",
-                    default = here::here("deaths-data/import/output"))
+                    default = here::here("code/deaths-data/import/output"))
 parser$add_argument("--cod_mapping",
                     default = "hand/cod-mapping.csv")
 parser$add_argument("--output")

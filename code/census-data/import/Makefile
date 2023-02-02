@@ -2,7 +2,7 @@
 # Authors:     MG
 # Maintainers: MG
 # =========================================
-# mexico-homicide-rates/census-data/import/Makefile
+# mexico-homicide-rates/code/census-data/import/Makefile
 
 HERE := $(shell git rev-parse --show-toplevel)
 

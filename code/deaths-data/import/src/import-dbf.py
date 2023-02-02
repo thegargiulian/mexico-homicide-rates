@@ -1,12 +1,14 @@
 #!/bin/env python3
 # -*- coding: utf-8 -*-
+#
+# Authors:     MG
+# Maintainers: MG
 # ===========================================
-# replication-project/extension/process-deaths/import/src/import-dbf.py
+# mexico-homicide-rates/code/deaths-data/import
 
 import argparse
 import pandas as pd
 from simpledbf import Dbf5
-#import hashlib
 
 
 def getargs():

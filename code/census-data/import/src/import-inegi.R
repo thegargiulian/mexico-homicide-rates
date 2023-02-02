@@ -2,7 +2,7 @@
 # Authors:     MG
 # Maintainers: MG
 # =========================================
-# mexico-homicide-rates/census-data/import/src/import-inegi.R
+# mexico-homicide-rates/code/census-data/import/src/import-inegi.R
 
 # ----- setup
 

@@ -2,7 +2,7 @@
 # Authors:     MG
 # Maintainers: MG
 # =========================================
-# mexico-homicide-rates/census-data/interpolate/src/interpolate.R
+# mexico-homicide-rates/code/census-data/interpolate/src/interpolate.R
 
 # ----- setup
 
@@ -10,11 +10,11 @@ pacman::p_load(argparse, here, readr, dplyr, purrr, lubridate)
 
 parser <- ArgumentParser()
 parser$add_argument("--census_2000",
-                    default = here::here("census-data/import-muni/output/census-2000.csv"))
+                    default = here::here("code/census-data/import-muni/output/census-2000.csv"))
 parser$add_argument("--census_2010",
-                    default = here::here("census-data/import-muni/output/census-2010.csv"))
+                    default = here::here("code/census-data/import-muni/output/census-2010.csv"))
 parser$add_argument("--census_2020",
-                    default = here::here("census-data/import-muni/output/census-2020.csv"))
+                    default = here::here("code/census-data/import-muni/output/census-2020.csv"))
 parser$add_argument("--new_munis",
                     default = "output/new-munis.csv")
 parser$add_argument("--population_estimates",
