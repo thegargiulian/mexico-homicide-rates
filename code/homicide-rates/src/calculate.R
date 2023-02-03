@@ -16,7 +16,7 @@ parser$add_argument("--homicides_data",
 parser$add_argument("--population_estimates",
                     default = here::here("census-data/interpolate/output/population-estimates.csv"))
 parser$add_argument("--output",
-                    default = "output/homicide-rates.csv")
+                    default = "output/mexico-muni-month-homicide-rates-2000-2019.csv")
 
 args <- parser$parse_args()
 
@@ -71,3 +71,4 @@ homicide_rates %>%
     write_delim(args$output, delim = "|")
 
 # done.
+
