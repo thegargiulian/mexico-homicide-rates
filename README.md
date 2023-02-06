@@ -8,7 +8,7 @@ Data on crude monthly municipal-level homicide rates is available in `mexico-mun
 If you use `R` you can use `readr` package to load the file in without unzipping and specify the separator with `readr::read_delim("PATH_TO_FILE", delim = "|")` 
 
 ## Reproducing the results
-The code to reproduce the homicide rate calculations is in the `code` subdirectory and divided into three groups of tasks: `census-data`, `deaths-data`, and `homicide-rates`. The `census-data` and `deaths-data` tasks assum that the requisite data is in a top-level directory called `data`.
+The code to reproduce the homicide rate calculations is in the `code` subdirectory and divided into three groups of tasks: `census-data`, `deaths-data`, and `homicide-rates`. The `census-data` and `deaths-data` tasks assume that the requisite data is in a top-level directory called `data`.
 
 To replicate the results, first run the `import` sub-task within the `census-data` task using the `Makefile` in the `census-data/import` directory. This task reads in data from the 2000, 2010, and 2020 censuses, extracts municipal-level population counts, and verifies that they sum to the total population. This task expects three census data files from INEGI in a sub-directory called `census` within the top-level `data` directory. The files are:
 
@@ -22,7 +22,7 @@ After running both sub-tasks in the `census-data` task, run the sub-tasks in the
 
 Next, run the `homicide-counts` sub-task using the `Makefile`. This task uses the death certificate files imported in the `deaths-data/import` task to generate counts of homicide deaths in each municipality in each month from January 2000-December 2020. The cause of death classification file, found in the `hand` subdirectory follows the cause of death classification scheme used by [Elo, Beltrán-Sánchez and Macinko (2014)](https://pubmed.ncbi.nlm.nih.gov/24554793/). Note that deaths that occurred outside of Mexico and deaths that were missing cause of death, country of occurrence, or municipality of occurrence were excluded from these calculations. We also opted to use data from the location where the death occurred rather than the location where the individual was from because this information was more complete for homicides. One day we might impute this information and recalculate the counts accordingly.
 
-Finally, run the `homicide-rates` task to calculate the montly municipal-level crude homicide rates for January 2000-December 2019.
+Finally, run the top-level `homicide-rates` task to calculate the montly municipal-level crude homicide rates for January 2000-December 2019.
 
 ---
 
