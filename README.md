@@ -1,5 +1,6 @@
-[![CC BY 4.0][cc-by-shield]][cc-by]
+[![doi](https://img.shields.io/badge/DOI-10.17605/OSF.IO/U8DC3-lightgrey.svg?style=for-the-badge)][doi]
 
+[doi]: https://doi.org/10.0.68.197/OSF.IO/U8DC3
 
 # Monthly municipal-level homicide rates in Mexico from January 2000 to December 2019
 
@@ -24,16 +25,16 @@ Next, run the `homicide-counts` sub-task using the `Makefile`. This task uses th
 
 Finally, run the top-level `homicide-rates` task to calculate the montly municipal-level crude homicide rates for January 2000-December 2019.
 
----
+If you use this data please use the BibTeX entry below or see the [OSF repository](https://osf.io/u8dc3/) for other citation formats:
 
-This work is licensed under a
-[Creative Commons Attribution 4.0 International License][cc-by].
-
-[![CC BY 4.0][cc-by-image]][cc-by]
-
-[cc-by]: http://creativecommons.org/licenses/by/4.0/
-[cc-by-image]: https://i.creativecommons.org/l/by/4.0/88x31.png
-[cc-by-shield]: https://img.shields.io/badge/License-CC%20BY%204.0-lightgrey.svg
-
-
-
+```
+@misc{Gargiulo_Aburto_Floridi_2023,
+  title={Monthly municipal-level homicide rates in Mexico (January 2000–December 2019)},
+  url={osf.io/u8dc3},
+  DOI={10.17605/OSF.IO/U8DC3},
+  publisher={OSF},
+  author={Gargiulo, Maria and Aburto, José Manuel and Floridi, Ginevra},
+  year={2023},
+  month={Feb}
+}
+```
