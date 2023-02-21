@@ -12,11 +12,11 @@ pacman::p_load(argparse, here, dplyr, readr, tidyr, lubridate)
 
 parser <- ArgumentParser()
 parser$add_argument("--homicides_data",
-                    default = here::here("deaths-data/homicide-tables/output/muni-month-homicides-2000-2020.csv"))
+                    default = here::here("deaths-data/homicide-tables/output/muni-month-homicides-2000-2021.csv"))
 parser$add_argument("--population_estimates",
                     default = here::here("census-data/interpolate/output/population-estimates.csv"))
 parser$add_argument("--output",
-                    default = "output/mexico-muni-month-homicide-rates-2000-2019.csv")
+                    default = "output/mexico-muni-month-homicide-rates-2000-2021.csv")
 
 args <- parser$parse_args()
 
@@ -45,10 +45,9 @@ population <- read_delim(args$population_estimates, delim = "|") %>%
     select(-month, -day, -est_date)
 
 # start by creating a grid with all municipalities and months between January
-# 2000 and December 2019 (mid-year population estimates aren't available for
-# 2020 because the census took place in March)
+# 2000 and December 2021
 munis <- union(homicides$ent_mun, population$ent_mun)
-months <- seq(ym("200001"), ym("201912"), by = "month")
+months <- seq(ym("200001"), ym("202112"), by = "month")
 
 homicide_rates <- crossing(munis, months) %>% # expand grid
     mutate(year = as.numeric(year(months)),
