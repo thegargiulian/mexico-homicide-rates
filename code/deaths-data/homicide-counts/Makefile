@@ -9,12 +9,12 @@ DEATHS := $(wildcard $(HERE)/code/deaths-data/import/output/DEFUN*.csv)
 
 .PHONY: all clean
 
-all: output/muni-month-homicides-2000-2020.csv
+all: output/muni-month-homicides-2000-2021.csv
 
 clean:
 		-rm output/*
 
-output/muni-month-homicides-2000-2020.csv: \
+output/muni-month-homicides-2000-2021.csv: \
 		src/calculate.R \
 		$(DEATHS)
 	-mkdir output

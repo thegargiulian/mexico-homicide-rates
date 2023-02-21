@@ -45,7 +45,7 @@ homicide_codes <- cod_mapping %>%
     filter(cod_group == "Homicides")
 
 # collect all death certificate file paths
-years <- 2000:2020
+years <- 2000:2021
 input_files <- glue("{args$import_stub}/DEFUN{years}.csv")
 
 # read in and concatenate records from all files
@@ -53,7 +53,7 @@ deaths_data <- map_dfr(input_files, read_file)
 
 homicide_deaths <- deaths_data %>%
     # filter out deaths that occurred outside of time period or are missing year information
-    filter(between(year, 2000, 2020)) %>%
+    filter(between(year, 2000, 2021)) %>%
     # filter out deaths missing month information
     filter(month != 99) %>%
     # filter out deaths that occurred outside of Mexico or are missing state info

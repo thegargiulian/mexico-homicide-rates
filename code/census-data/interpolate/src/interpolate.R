@@ -33,7 +33,7 @@ interpolation_wrapper <- function(ent) {
 
     # use 1 July as mid-year date
     mid_years_1 <- seq(ymd(20000701), ymd(20090701), by = "year")
-    mid_years_2 <- seq(ymd(20100701), ymd(20190701), by = "year")
+    mid_years_2 <- seq(ymd(20100701), ymd(20210701), by = "year") # apply same slope through 2021
 
     estimates_1 <- map_dfr(.x = mid_years_1,
                            ~interpolate_population(pop_1 = ent$total_pop_2000,
@@ -68,14 +68,14 @@ interpolate_population <- function(pop_1, pop_2, census_1, census_2, est_date) {
 
 # load and join data
 census_2000 <- read_delim(args$census_2000, delim = "|") %>%
-    select(total_pop, ent_mun) %>%
-    rename(total_pop_2000 = total_pop)
+    mutate(total_pop_2000 = total_m + total_f) %>%
+    select(total_pop_2000, ent_mun)
 census_2010 <- read_delim(args$census_2010, delim = "|") %>%
-    select(total_pop, ent_mun) %>%
-    rename(total_pop_2010 = total_pop)
+    mutate(total_pop_2010 = total_m + total_f) %>%
+    select(total_pop_2010, ent_mun)
 census_2020 <- read_delim(args$census_2020, delim = "|") %>%
-    select(total_pop, ent_mun) %>%
-    rename(total_pop_2020 = total_pop)
+    mutate(total_pop_2020 = total_m + total_f) %>%
+    select(total_pop_2020, ent_mun)
 
 census_data <- list(census_2000, census_2010, census_2020) %>%
     reduce(., full_join, by = "ent_mun") %>%
