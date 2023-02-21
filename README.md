@@ -29,7 +29,7 @@ If you use this data please use the BibTeX entry below or see the [OSF repositor
 
 ```
 @misc{Gargiulo_Aburto_Floridi_2023,
-  title={Monthly municipal-level homicide rates in Mexico (January 2000–December 2019)},
+  title={Monthly municipal-level homicide rates in Mexico (January 2000–December 2021)},
   url={osf.io/u8dc3},
   DOI={10.17605/OSF.IO/U8DC3},
   publisher={OSF},
