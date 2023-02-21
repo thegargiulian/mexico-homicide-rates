@@ -1,6 +1,7 @@
 [![doi](https://img.shields.io/badge/DOI-10.17605/OSF.IO/U8DC3-lightgrey.svg?style=for-the-badge)][doi]
 
-[doi]: https://doi.org/10.0.68.197/OSF.IO/U8DC3
+[doi]: https://doi.org/10.17605/OSF.IO/U8DC3
+
 
 # Monthly municipal-level homicide rates in Mexico from January 2000 to December 2021
 
