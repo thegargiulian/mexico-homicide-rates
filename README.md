@@ -5,7 +5,7 @@
 
 # Monthly municipal-level homicide rates in Mexico from January 2000 to December 2021
 
-Data on crude monthly municipal-level homicide rates is available in `mexico-muni-month-homicide-rates-2000-2021.csv.`. Note that this file uses `|` as the separator.
+Data on crude monthly municipal-level homicide rates is available in `mexico-muni-month-homicide-rates-2000-2021.csv`; state-level aggregations are available in `mexico-state-month-homicide-rates-2000-2021.csv`. Note that both files use `|` as the separator.
 
 If you use `R` you can use `readr` package to load the file and specify the separator with `readr::read_delim("PATH_TO_FILE", delim = "|")` 
 

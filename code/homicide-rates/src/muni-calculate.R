@@ -2,7 +2,7 @@
 # Authors:     MG
 # Maintainers: MG
 # =========================================
-# mexico-homicide-rates/code/homicide-rates/src/calculate.R
+# mexico-homicide-rates/code/homicide-rates/src/muni-calculate.R
 
 # ----- setup
 
@@ -12,9 +12,9 @@ pacman::p_load(argparse, here, dplyr, readr, tidyr, lubridate)
 
 parser <- ArgumentParser()
 parser$add_argument("--homicides_data",
-                    default = here::here("deaths-data/homicide-tables/output/muni-month-homicides-2000-2021.csv"))
+                    default = here::here("code/deaths-data/homicide-counts/output/muni-month-homicides-2000-2021.csv"))
 parser$add_argument("--population_estimates",
-                    default = here::here("census-data/interpolate/output/population-estimates.csv"))
+                    default = here::here("code/census-data/interpolate/output/population-estimates.csv"))
 parser$add_argument("--output",
                     default = "output/mexico-muni-month-homicide-rates-2000-2021.csv")
 
@@ -70,4 +70,3 @@ homicide_rates %>%
     write_delim(args$output, delim = "|")
 
 # done.
-
