@@ -68,13 +68,13 @@ interpolate_population <- function(pop_1, pop_2, census_1, census_2, est_date) {
 
 # load and join data
 census_2000 <- read_delim(args$census_2000, delim = "|") %>%
-    mutate(total_pop_2000 = total_m + total_f) %>%
+    mutate(total_pop_2000 = total_pop) %>%
     select(total_pop_2000, ent_mun)
 census_2010 <- read_delim(args$census_2010, delim = "|") %>%
-    mutate(total_pop_2010 = total_m + total_f) %>%
+    mutate(total_pop_2010 = total_pop) %>%
     select(total_pop_2010, ent_mun)
 census_2020 <- read_delim(args$census_2020, delim = "|") %>%
-    mutate(total_pop_2020 = total_m + total_f) %>%
+    mutate(total_pop_2020 = total_pop) %>%
     select(total_pop_2020, ent_mun)
 
 census_data <- list(census_2000, census_2010, census_2020) %>%
