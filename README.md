@@ -5,9 +5,9 @@
 
 # Monthly municipal-level homicide rates in Mexico from January 2000 to December 2021
 
-Data on crude monthly municipal-level homicide rates is available in `mexico-muni-month-homicide-rates-2000-2021.csv.gz`. Note that this file uses `|` as the separator and may need to be unzipped before your preferred statistical software can read it.
+Data on crude monthly municipal-level homicide rates is available in `mexico-muni-month-homicide-rates-2000-2021.csv.`. Note that this file uses `|` as the separator.
 
-If you use `R` you can use `readr` package to load the file in without unzipping and specify the separator with `readr::read_delim("PATH_TO_FILE", delim = "|")` 
+If you use `R` you can use `readr` package to load the file and specify the separator with `readr::read_delim("PATH_TO_FILE", delim = "|")` 
 
 ## Reproducing the results
 The code to reproduce the homicide rate calculations is in the `code` subdirectory and divided into three groups of tasks: `census-data`, `deaths-data`, and `homicide-rates`. The `census-data` and `deaths-data` tasks assume that the requisite data is in a top-level directory called `data`.
@@ -24,7 +24,7 @@ After running both sub-tasks in the `census-data` task, run the sub-tasks in the
 
 Next, run the `homicide-counts` sub-task using the `Makefile`. This task uses the death certificate files imported in the `deaths-data/import` task to generate counts of homicide deaths in each municipality in each month from January 2000-December 2021. The cause of death classification file, found in the `hand` subdirectory follows the cause of death classification scheme used by [Elo, Beltrán-Sánchez and Macinko (2014)](https://pubmed.ncbi.nlm.nih.gov/24554793/). Note that deaths that occurred outside of Mexico and deaths that were missing cause of death, country of occurrence, or municipality of occurrence were excluded from these calculations. We also opted to use data from the location where the death occurred rather than the location where the individual was from because this information was more complete for homicides. One day we might impute this information and recalculate the counts accordingly.
 
-Finally, run the top-level `homicide-rates` task to calculate the montly municipal-level crude homicide rates for January 2000-December 2021.
+Finally, run the top-level `homicide-rates` task to calculate the monthly municipal-level crude homicide rates for January 2000-December 2021.
 
 If you use this data please use the BibTeX entry below or see the [OSF repository](https://osf.io/u8dc3/) for other citation formats:
 
