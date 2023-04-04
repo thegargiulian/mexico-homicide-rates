@@ -32,8 +32,8 @@ inegi_data_total <- inegi_data %>%
     filter(loc == "0000" & nom_ent == "Total nacional") %>%
     pull(pobtot)
 
-inegi_muni_pop <- inegi_data %>%
-    filter(loc == "0000" & nom_ent != "Total nacional" & mun != "000") %>%
+inegi_state_pop <- inegi_data %>%
+    filter(loc == "0000" & nom_ent != "Total nacional" & mun == "000") %>%
     select(cve_ent = entidad, cve_mun = mun,
            total_pop = pobtot, total_f = pobfem, total_m = pobmas) %>%
     mutate(ent_mun = paste0(cve_ent, cve_mun),
@@ -41,7 +41,7 @@ inegi_muni_pop <- inegi_data %>%
            total_m = as.numeric(total_m)) %>%
     verify(sum(total_pop) == inegi_data_total)
 
-glimpse(inegi_muni_pop) %>%
+glimpse(inegi_state_pop) %>%
     write_delim(args$output, delim = "|")
 
 # done.

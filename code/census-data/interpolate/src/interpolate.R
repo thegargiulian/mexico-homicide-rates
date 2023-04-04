@@ -10,11 +10,11 @@ pacman::p_load(argparse, here, readr, dplyr, purrr, lubridate)
 
 parser <- ArgumentParser()
 parser$add_argument("--census_2000",
-                    default = here::here("code/census-data/import-muni/output/census-2000.csv"))
+                    default = here::here("code/census-data/import/output/census-2000.csv"))
 parser$add_argument("--census_2010",
-                    default = here::here("code/census-data/import-muni/output/census-2010.csv"))
+                    default = here::here("code/census-data/import/output/census-2010.csv"))
 parser$add_argument("--census_2020",
-                    default = here::here("code/census-data/import-muni/output/census-2020.csv"))
+                    default = here::here("code/census-data/import/output/census-2020.csv"))
 parser$add_argument("--new_munis",
                     default = "output/new-munis.csv")
 parser$add_argument("--population_estimates",
@@ -35,20 +35,39 @@ interpolation_wrapper <- function(ent) {
     mid_years_1 <- seq(ymd(20000701), ymd(20090701), by = "year")
     mid_years_2 <- seq(ymd(20100701), ymd(20210701), by = "year") # apply same slope through 2021
 
-    estimates_1 <- map_dfr(.x = mid_years_1,
-                           ~interpolate_population(pop_1 = ent$total_pop_2000,
-                                                   pop_2 = ent$total_pop_2010,
+    estimates_1f <- map_dfr(.x = mid_years_1,
+                           ~interpolate_population(pop_1 = ent$f_pop_2000,
+                                                   pop_2 = ent$f_pop_2010,
                                                    census_1 = census_2000,
                                                    census_2 = census_2010,
-                                                   est_date = .x))
-    estimates_2 <- map_dfr(.x = mid_years_2,
-                           ~interpolate_population(pop_1 = ent$total_pop_2010,
-                                                   pop_2 = ent$total_pop_2020,
+                                                   est_date = .x)) %>%
+        mutate(sex = "FEMALE")
+    
+    estimates_2f <- map_dfr(.x = mid_years_2,
+                           ~interpolate_population(pop_1 = ent$f_pop_2010,
+                                                   pop_2 = ent$f_pop_2020,
                                                    census_1 = census_2010,
                                                    census_2 = census_2020,
-                                                   est_date = .x))
+                                                   est_date = .x)) %>%
+        mutate(sex = "FEMALE")
+    
+    estimates_1m <- map_dfr(.x = mid_years_1,
+                            ~interpolate_population(pop_1 = ent$m_pop_2000,
+                                                    pop_2 = ent$m_pop_2010,
+                                                    census_1 = census_2000,
+                                                    census_2 = census_2010,
+                                                    est_date = .x)) %>%
+        mutate(sex = "MALE")
+    
+    estimates_2m <- map_dfr(.x = mid_years_2,
+                            ~interpolate_population(pop_1 = ent$m_pop_2010,
+                                                    pop_2 = ent$m_pop_2020,
+                                                    census_1 = census_2010,
+                                                    census_2 = census_2020,
+                                                    est_date = .x)) %>%
+        mutate(sex = "MALE")
 
-    bind_rows(estimates_1, estimates_2) %>%
+    bind_rows(estimates_1f, estimates_2f, estimates_1m, estimates_2m) %>%
         mutate(ent_mun = ent$ent_mun)
 
 }
@@ -68,26 +87,21 @@ interpolate_population <- function(pop_1, pop_2, census_1, census_2, est_date) {
 
 # load and join data
 census_2000 <- read_delim(args$census_2000, delim = "|") %>%
-    mutate(total_pop_2000 = total_pop) %>%
-    select(total_pop_2000, ent_mun)
+    mutate(f_pop_2000 = total_f,
+           m_pop_2000 = total_m) %>%
+    select(f_pop_2000, m_pop_2000, ent_mun)
 census_2010 <- read_delim(args$census_2010, delim = "|") %>%
-    mutate(total_pop_2010 = total_pop) %>%
-    select(total_pop_2010, ent_mun)
+    mutate(f_pop_2010 = total_f,
+           m_pop_2010 = total_m) %>%
+    select(f_pop_2010, m_pop_2010, ent_mun)
 census_2020 <- read_delim(args$census_2020, delim = "|") %>%
-    mutate(total_pop_2020 = total_pop) %>%
-    select(total_pop_2020, ent_mun)
+    mutate(f_pop_2020 = total_f,
+           m_pop_2020 = total_m) %>%
+    select(f_pop_2020, m_pop_2020, ent_mun)
 
 census_data <- list(census_2000, census_2010, census_2020) %>%
     reduce(., full_join, by = "ent_mun") %>%
     select(ent_mun, everything())
-
-# writing munis that don't have population data for all 3 census years to file
-census_data %>%
-    filter(is.na(total_pop_2000) | is.na(total_pop_2010) | is.na(total_pop_2020)) %>%
-    write_delim(args$new_munis, delim = "|")
-
-census_data <- census_data %>%
-    filter(!is.na(total_pop_2000) & !is.na(total_pop_2010) & !is.na(total_pop_2020))
 
 # interpolate to get mid-years population estimates for the intercensal period
 population_estimates <- census_data %>%

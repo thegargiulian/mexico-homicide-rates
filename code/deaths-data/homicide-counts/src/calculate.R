@@ -30,8 +30,9 @@ read_file <- function(input_file) {
         mutate(cve_ent = str_pad(ent_ocurr, 2, "left", "0"),
                cve_mun = str_pad(mun_ocurr, 3, "left", "0"),
                year = anio_ocur,
-               month = mes_ocurr) %>%
-        select(cve_ent, cve_mun, causa_def, year, month)
+               month = mes_ocurr,
+               sex = sexo) %>%
+        select(cve_ent, cve_mun, causa_def, year, month, sex)
 
     return(def_data)
 
@@ -60,9 +61,12 @@ homicide_deaths <- deaths_data %>%
     filter(!(cve_ent %in% c("33", "34", "35", "99"))) %>%
     # filter out deaths missing muni information
     filter(cve_mun != "999") %>%
+    # filter out deaths missing sex
+    filter(sex != 9) %>%
     # filter out deaths with non-homicide ICD codes
     filter(causa_def %in% homicide_codes$causa_def) %>%
-    group_by(cve_ent, cve_mun, year, month) %>%
+    mutate(sex = if_else(sex == 1, "MALE", "FEMALE")) %>%
+    group_by(cve_ent, cve_mun, year, month, sex) %>%
     summarize(homicides = n()) %>%
     ungroup() %>%
     mutate(ent_mun = paste0(cve_ent, cve_mun))
