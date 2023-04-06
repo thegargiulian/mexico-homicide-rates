@@ -110,17 +110,30 @@ homicide_rates <- read_delim(args$input, delim = "|") %>%
                                cve_ent == "31" ~ "YUC",
                                cve_ent == "32" ~ "ZAC"))
 
-homicide_rates %>%
+homicide_data <- homicide_rates %>%
     bind_rows(global_averages) %>%
     mutate(cve_ent = factor(cve_ent)) %>%
     mutate(cve_ent = fct_relevel(cve_ent, "World", after = Inf)) %>%
+    mutate(color = case_when(cve_ent == "BCN" ~ scales::hue_pal()(5)[1],
+                             cve_ent == "MIC" ~ scales::hue_pal()(5)[2],
+                             cve_ent == "MOR" ~ scales::hue_pal()(5)[3],
+                             cve_ent == "SON" ~ scales::hue_pal()(5)[4],
+                             cve_ent == "ZAC" ~ scales::hue_pal()(5)[5],
+                             cve_ent == "World" ~ "black",
+                             TRUE ~ "grey75"),
+           linetype = if_else(cve_ent == "World", "dashed", "solid"))
+
+linegraph <- homicide_data %>%
     ggplot(aes(x = year, y = homicide_rate)) +
-    geom_line(aes(color = cve_ent, group = cve_ent, linetype = cve_ent), size = 0.6) +
+    geom_line(aes(color = color, group = cve_ent), linewidth = 0.6) +
     facet_wrap(~sex, scales = "free") +
-    scale_color_manual("State", values = c(scales::hue_pal()(32), "black")) +
-    scale_linetype_manual("State", values = c(rep("solid", 32), "dashed")) +
     theme_minimal() +
+    scale_color_identity(name = "State",
+                         breaks = c("#F8766D", "#A3A500", "#00BF7D", "#00B0F6", "#E76BF3", "grey75", "black"),
+                         labels = c("BCN", "MIC", "MOR", "SON", "ZAC", "Other states", "World avg."),
+                         guide = "legend") +
     xlab("") +
-    ylab("Homicide rate per 100,000 population")
+    ylab("Homicide rate per 100,000 population") +
+    guides(color = guide_legend("State"))
 
 # done.
