@@ -33,7 +33,7 @@ interpolation_wrapper <- function(ent) {
 
     # use 1 July as mid-year date
     mid_years_1 <- seq(ymd(20000701), ymd(20090701), by = "year")
-    mid_years_2 <- seq(ymd(20100701), ymd(20210701), by = "year") # apply same slope through 2021
+    mid_years_2 <- seq(ymd(20100701), ymd(20220701), by = "year") # apply same slope through 2022
 
     estimates_1 <- map_dfr(.x = mid_years_1,
                            ~interpolate_population(pop_1 = ent$total_pop_2000,

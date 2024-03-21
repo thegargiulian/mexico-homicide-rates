@@ -12,7 +12,7 @@ pacman::p_load(argparse, here, dplyr, readr, tidyr, lubridate, assertr, stringr)
 
 parser <- ArgumentParser()
 parser$add_argument("--homicides_data",
-                    default = here::here("code/deaths-data/homicide-counts/output/muni-month-homicides-2000-2021.csv"))
+                    default = here::here("code/deaths-data/homicide-counts/output/muni-month-homicides-2000-2022.csv"))
 parser$add_argument("--population_estimates",
                     default = here::here("code/census-data/interpolate/output/population-estimates.csv"))
 parser$add_argument("--output",
@@ -61,9 +61,9 @@ population <- population %>%
     ungroup()
 
 # start by creating a grid with all states and months between January
-# 2000 and December 2021
+# 2000 and December 2022
 states <- union(homicides$cve_ent, population$cve_ent)
-months <- seq(ym("200001"), ym("202112"), by = "month")
+months <- seq(ym("200001"), ym("202212"), by = "month")
 
 homicide_rates <- crossing(states, months) %>% # expand grid
     mutate(year = as.numeric(year(months)),
